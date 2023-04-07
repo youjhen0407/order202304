@@ -68,6 +68,16 @@
                                 </div>
                             </div>
                             <div class="mb-3">
+                                <div>尺寸*</div>
+                                <div class="form-check form-check-inline" v-for="(item, key) in sizeType">
+                                    <input class="form-check-input" type="radio" name="sizeType" id="" :value="item"
+                                     :disabled="!tempSelected.hasOwnProperty('defaults') || (tempSelected.defaults.size !== '' && tempSelected.defaults.size != item)" v-model="tempSelected.size">
+                                    <label class="form-check-label" for="">
+                                        {{ item }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label for="">備註</label>
                                 <textarea name="" id="" cols="30" rows="3" class="form-control" v-model="tempSelected.notice"></textarea>
                             </div>
@@ -86,6 +96,7 @@
                                         <th>冰塊</th>
                                         <th>甜度</th>
                                         <th>加料</th>
+                                        <th>尺寸</th>
                                         <th>單價</th>
                                         <th>數量</th>
                                         <th>小計</th>
@@ -97,6 +108,7 @@
                                         <td>{{ item.ice }}</td>
                                         <td>{{ item.sugar }}</td>
                                         <td>{{ item.toppings .toString() }}</td>
+                                        <td>{{ item.size }}</td>
                                         <td>{{ item.price }}</td>
                                         <td>{{ item.count }}</td>
                                         <td>{{ item.total }}</td>
@@ -119,6 +131,7 @@
                                         <th>冰塊</th>
                                         <th>甜度</th>
                                         <th>加料</th>
+                                        <th>尺寸</th>
                                         <th>單價</th>
                                         <th>數量</th>
                                         <th>小計</th>
@@ -130,6 +143,7 @@
                                         <td>{{ item.ice }}</td>
                                         <td>{{ item.sugar }}</td>
                                         <td>{{ item.toppings .toString() }}</td>
+                                        <td>{{ item.size }}</td>
                                         <td>{{ item.price }}</td>
                                         <td>{{ item.count }}</td>
                                         <td>{{ item.total }}</td>
@@ -163,6 +177,7 @@
                     iceType: ['正常冰', '少冰', '微冰', '去冰', '熱'],
                     sugarType: ['全糖', '七分', '半糖', '三分', '無糖'],
                     toppingsType: ['珍珠', '粉條', '小粉圓', '椰果', '芋頭'],
+                    sizeType:['大杯','中杯','小杯'],
                     product: [
                         {
                             name: '阿薩姆奶茶(珍珠)',
@@ -171,7 +186,8 @@
                             defaults: {
                                 ice: '少冰',
                                 sugar: '七分',
-                                toppings: ['珍珠', '小粉圓']
+                                toppings: ['珍珠', '小粉圓'],
+                                size:'大杯',
                             }
                         },
                         {
@@ -181,7 +197,8 @@
                             defaults: {
                                 ice: '少冰',
                                 sugar: '',
-                                toppings: ['']
+                                toppings: [''],
+                                size:'',
                             }
                         },
                         {
@@ -191,7 +208,8 @@
                             defaults: {
                                 ice: '',
                                 sugar: '',
-                                toppings: ['椰果']
+                                toppings: ['椰果'],
+                                size:'中杯',
                             }
                         },
                         {
@@ -201,7 +219,8 @@
                             defaults: {
                                 ice: '去冰',
                                 sugar: '',
-                                toppings: ['']
+                                toppings: [''],
+                                size:'小杯',
                             }
                         }
                     ]
@@ -215,6 +234,7 @@
                         count: '1',
                         ice: product.defaults.ice !== "" ? product.defaults.ice : '正常冰',
                         sugar: product.defaults.sugar !=="" ? product.defaults.sugar : '全糖',
+                        sugar: product.defaults.size !=="" ? product.defaults.sugar : '大杯',
                         toppings: [],
                         notice: ''
                     }
