@@ -26,8 +26,9 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div class="card">
+                <div class="card"> <!--!tempSelected.name沒有這個 遮罩消失-->
                     <div class="card-body">
+                        <div v-if="!tempSelected.name" class="text-white d-flex align-items-center justify-content-center h2 fw-700" style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;background-color: rgba(0, 0, 0, 0.2); z-index: 100;">先選擇飲品</div>
                         <div class="mb-3">
                             <label for="" class="form-label">數量</label>
                             <input type="number" min="0" max="20" class="form-control" id="" v-model="tempSelected.count">
@@ -76,8 +77,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mt-3">
-                        <div class="card-body">
+                    <div class="card mt-3"> <!--v-if="orderList.length > 0" 長度大於零 按下按鈕出現-->
+                        <div class="card-body" v-if="orderList.length > 0" >
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -90,19 +91,19 @@
                                         <th>小計</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
+                                <tbody> <!--.toString():陣列轉字串的方法--> <!--按下加入按鈕渲染出內容-->
+                                    <tr v-for="(item, key) in orderList">
+                                        <td>{{ item.name }}</td>  
+                                        <td>{{ item.ice }}</td>
+                                        <td>{{ item.sugar }}</td>
+                                        <td>{{ item.toppings .toString() }}</td>
+                                        <td>{{ item.price }}</td>
+                                        <td>{{ item.count }}</td>
+                                        <td>{{ item.total }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <button class="btn btn-secondary w-100">產生訂單</button>
+                            <button class="btn btn-secondary w-100"  @click="generateOrder()">產生訂單</button>
                         </div>
                     </div>
                 </div>
@@ -110,7 +111,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card mt-3">
-                        <div class="card-body">
+                        <div class="card-body" v-if="checkOrder.time"> <!--v-if="checkOrder.time" 等於時間 出現-->
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -124,22 +125,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
-                                        <td>XX</td>
+                                    <tr v-for="(item, key) in checkOrder.order"> <!--按下產生訂單按鈕渲染出內容-->
+                                        <td>{{ item.name }}</td>  
+                                        <td>{{ item.ice }}</td>
+                                        <td>{{ item.sugar }}</td>
+                                        <td>{{ item.toppings .toString() }}</td>
+                                        <td>{{ item.price }}</td>
+                                        <td>{{ item.count }}</td>
+                                        <td>{{ item.total }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="mt-4">
-                                <p>訂單成立時間: XXXXXX</p>
-                                <p>餐點數量: 10</p>
+                            <div class="mt-4">      <!--按下產生訂單按鈕 下一個畫面渲染出內容-->
+                                <p>訂單成立時間: {{ checkOrder.time }}</p>
+                                <p>餐點數量: {{ checkOrder.order.length }}</p>
                                 <p>付款狀態: 未付款</p>
-                                <p class="text-end">共NT$XXX元</p>
+                                <p class="text-end">共NT${{ checkOrder.total }}元</p>
                             </div>
                         </div>
                     </div>
@@ -152,6 +153,11 @@
         var App = {
             data() {
                 return {
+                    checkOrder:{   //按下產生訂單後的畫面
+                        time:'',
+                        total: 0,
+                        order:[]
+                    },
                     orderList: [], //紀錄還未產生訂單的購物清單
                     tempSelected: {},
                     iceType: ['正常冰', '少冰', '微冰', '去冰', '熱'],
@@ -212,14 +218,32 @@
                         toppings: [],
                         notice: ''
                     }
-                },
-                addToOrder(product) {
+                }, 
+                addToOrder(product) { //小計的寫法
                     this.orderList.push(
                         {
                             ...product,
                             total: (product.price + product.toppings.length*10) * product.count
                         }
                     );
+                },
+                generateOrder(){  //產生訂單
+                    var time = new Date().toLocaleString();
+                    this.checkOrder.time = time;
+                    this.checkOrder.order = this.orderList;
+                    this.countTotal(); //總價
+                    this.reset();
+                },
+                countTotal(){
+                    var total = 0;
+                    this.orderList.forEach((item, key) => {
+                        total = total + item.total;
+                    });
+                    this.checkOrder.total = total;
+                },
+                reset(){                          //當按下產生訂單後資料傳到下一個畫面 原本的畫面清空
+                    this.tempSelected = {},
+                    this.orderList = []
                 }
             }
         }
